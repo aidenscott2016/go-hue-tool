@@ -18,7 +18,8 @@ type Light struct {
 
 // LightState : attributes for a light's state
 type LightState struct {
-	On bool `json:"on"`
+	On                  bool `json:"on,omitempty"`
+	BrightnessIncrement int  `json:"bri_inc,omitempty"`
 }
 
 // NewLight : returns a light of ID
@@ -38,6 +39,15 @@ func (l Light) TurnOff() {
 // TurnOn : sets light state on
 func (l Light) TurnOn() {
 	l.State.On = true
+	_, err := put(l)
+	if nil != err {
+		fmt.Println(err)
+	}
+}
+
+// IncrementBrightness : increments brigtness
+func (l Light) IncrementBrightness(inc int) {
+	l.State.BrightnessIncrement = inc
 	_, err := put(l)
 	if nil != err {
 		fmt.Println(err)

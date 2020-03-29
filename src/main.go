@@ -3,42 +3,37 @@ package main
 import (
 	"fmt"
 	"os"
-	"strconv"
+
+	"github.com/pborman/getopt/v2"
 )
 
 func main() {
-	args := os.Args
-	bridgeIP := args[1]
-	username := args[2]
-	lamp, _ := strconv.Atoi(args[3])
-	bridge := Bridge{Username: username, Host: bridgeIP}
+	// action := os.Args[1]
+	// if "off" != action && "on" != action && "increment" != action {
+	// 	fmt.Println("unkown action")
+	// 	os.Exit(1)
+	// }
 
-	fmt.Println(bridge)
-	light := NewLight(lamp, bridge)
-	light.TurnOff()
-	light.TurnOn()
+	bridgeIP := getopt.StringLong("bridge", 'b', "", "The IP of the bridge")
+	username := getopt.StringLong("username", 'u', "", "The IP of the bridge")
+	lamp := getopt.IntLong("lamp", 'l', -1, "The ID of the lamp")
+	step := getopt.IntLong("increment", 's', 0, "The the amount to increment by")
+
+	getopt.ParseV2()
+
+	fmt.Println(*bridgeIP)
+
+	if *bridgeIP == "" {
+		fmt.Println("bridge is required")
+		os.Exit(1)
+	}
+	if *username == "" {
+		os.Exit(1)
+	}
+
+	getopt.Usage()
+
+	bridge := Bridge{Username: *username, Host: *bridgeIP}
+	light := NewLight(*lamp, bridge)
+	light.IncrementBrightness(*step)
 }
-
-// func switchOffOld(bridge string, username string, lamp string) {
-// 	client := &http.Client{}
-// 	off := lightState{On: true}
-// 	offBody, err := json.Marshal(off)
-// 	if err != nil {
-// 		panic(err)
-// 	}
-// 	uri := createURI(bridge, username, "lights") + lamp + "/state"
-// 	fmt.Println(uri)
-// 	request, err := http.NewRequest("PUT", uri, bytes.NewBuffer(offBody))
-// 	if err != nil {
-// 		panic(err)
-// 	}
-// 	res, err := client.Do(request)
-// 	if err != nil {
-// 		panic(err)
-// 	}
-// 	io.Copy(os.Stdout, res.Body)
-// }
-
-// func createURI(bridge string, username string, resource string) string {
-// 	return fmt.Sprintf("http://%s/api/%s/%s/", bridge, username, resource)
-// }
