@@ -10,5 +10,5 @@ type Bridge struct {
 
 // CreateURI : creates a string, uri??? url??
 func (b Bridge) CreateURI() string {
-	return fmt.Sprintf("http://%s/api/%s/", b.Host, b.Username)
+	return fmt.Sprintf("http://%s/api/%s", b.Host, b.Username)
 }

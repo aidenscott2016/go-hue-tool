@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"strconv"
 )
@@ -12,13 +13,10 @@ func main() {
 	lamp, _ := strconv.Atoi(args[3])
 	bridge := Bridge{Username: username, Host: bridgeIP}
 
-	switchOff(lamp, bridge)
-}
-
-func switchOff(lightID int, bridge Bridge) {
-	light := NewLight(lightID, bridge)
+	fmt.Println(bridge)
+	light := NewLight(lamp, bridge)
 	light.TurnOff()
-
+	light.TurnOn()
 }
 
 // func switchOffOld(bridge string, username string, lamp string) {

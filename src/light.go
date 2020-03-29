@@ -29,25 +29,35 @@ func NewLight(id int, bridge Bridge) Light {
 // TurnOff : sets light state off
 func (l Light) TurnOff() {
 	l.State.On = false
-
+	_, err := put(l)
+	if nil != err {
+		fmt.Println(err)
+	}
 }
 
 // TurnOn : sets light state on
 func (l Light) TurnOn() {
 	l.State.On = true
+	_, err := put(l)
+	if nil != err {
+		fmt.Println(err)
+	}
 }
 
 func put(l Light) (bool, error) {
-	client := &http.Client{}
+	client := http.Client{}
 
 	body, err := json.Marshal(l.State)
 	if err != nil {
 		return false, err
 	}
-	request, err := http.NewRequest("PUT", l.getStatusEndpoint(), bytes.NewBuffer(body))
+
+	fmt.Println(l.getStateEndpoint())
+	request, err := http.NewRequest("PUT", l.getStateEndpoint(), bytes.NewBuffer(body))
 	if err != nil {
 		return false, err
 	}
+
 	res, err := client.Do(request)
 	if err != nil {
 		return false, err
@@ -57,6 +67,6 @@ func put(l Light) (bool, error) {
 	return true, nil
 }
 
-func (l Light) getStatusEndpoint() string {
-	return fmt.Sprintf(l.Bridge.CreateURI()+"/%i/status", l.ID)
+func (l Light) getStateEndpoint() string {
+	return fmt.Sprintf(l.Bridge.CreateURI()+"/lights/%d/state", l.ID)
 }
