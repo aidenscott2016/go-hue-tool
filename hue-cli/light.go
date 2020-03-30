@@ -16,8 +16,8 @@ type Light struct {
 
 // LightState : attributes for a light's state
 type LightState struct {
-	On                  bool `json:"on,omitempty"`
-	BrightnessIncrement int  `json:"bri_inc,omitempty"`
+	On                  *bool `json:"on,omitempty"`
+	BrightnessIncrement int   `json:"bri_inc,omitempty"`
 }
 
 // NewLight : returns a light of ID
@@ -27,8 +27,10 @@ func NewLight(id int, bridge Bridge) Light {
 
 // TurnOff : sets light state off
 func (l Light) TurnOff() {
-	l.State.On = false
+	f := false
+	l.State.On = &f
 	_, err := put(l)
+	fmt.Println(l)
 	if nil != err {
 		fmt.Println(err)
 	}
@@ -36,7 +38,8 @@ func (l Light) TurnOff() {
 
 // TurnOn : sets light state on
 func (l Light) TurnOn() {
-	l.State.On = true
+	t := true
+	l.State.On = &t
 	_, err := put(l)
 	if nil != err {
 		fmt.Println(err)
