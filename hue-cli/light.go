@@ -4,9 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
-	"os"
 )
 
 // Light : a Light
@@ -62,17 +60,15 @@ func put(l Light) (bool, error) {
 		return false, err
 	}
 
-	fmt.Println(l.getStateEndpoint())
 	request, err := http.NewRequest("PUT", l.getStateEndpoint(), bytes.NewBuffer(body))
 	if err != nil {
 		return false, err
 	}
 
-	res, err := client.Do(request)
+	_, err = client.Do(request)
 	if err != nil {
 		return false, err
 	}
-	io.Copy(os.Stdout, res.Body)
 
 	return true, nil
 }
